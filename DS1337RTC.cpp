@@ -67,98 +67,98 @@ void DS1337RTC::read( tmElements_t &tm, int address) // Aquire data from the RTC
   }
   
   Wire.beginTransmission(DS1337_CTRL_ID);
-  Wire.send(address);
+  Wire.write(address);
   Wire.endTransmission();
 
   Wire.requestFrom(DS1337_CTRL_ID, numberBytes);
   
   if(address != ALARM2_ADDRESS){  // alarm 2 doesn't have a seconds field 
-    tm.Second = bcd2dec(Wire.receive() );
+    tm.Second = bcd2dec(Wire.read() );
   }
-  tm.Minute = bcd2dec(Wire.receive() );
-  tm.Hour =   bcd2dec(Wire.receive() );
+  tm.Minute = bcd2dec(Wire.read() );
+  tm.Hour =   bcd2dec(Wire.read() );
   if(address == ALARM1_ADDRESS || address == ALARM2_ADDRESS){  // the alarms don't have a wday,day,month,or year field
-    tm.Day = bcd2dec(Wire.receive() );
+    tm.Day = bcd2dec(Wire.read() );
     tm.Month = 0;
     tm.Year = 0;
   }else{
-    tm.Wday = bcd2dec(Wire.receive() );
-    tm.Day = bcd2dec(Wire.receive() );
-    tm.Month = bcd2dec(Wire.receive() );
-    tm.Year = y2kYearToTm((bcd2dec(Wire.receive())));
+    tm.Wday = bcd2dec(Wire.read() );
+    tm.Day = bcd2dec(Wire.read() );
+    tm.Month = bcd2dec(Wire.read() );
+    tm.Year = y2kYearToTm((bcd2dec(Wire.read())));
   }
 }
 
 void DS1337RTC::write(tmElements_t &tm, int address)
 {
   Wire.beginTransmission(DS1337_CTRL_ID);
-  Wire.send(address); 
+  Wire.write(address); 
   
   if(address != ALARM2_ADDRESS){  // alarm 2 doesn't have a seconds field 
-    Wire.send(dec2bcd(tm.Second));
+    Wire.write(dec2bcd(tm.Second));
   }
-  Wire.send(dec2bcd(tm.Minute));
-  Wire.send(dec2bcd(tm.Hour));
+  Wire.write(dec2bcd(tm.Minute));
+  Wire.write(dec2bcd(tm.Hour));
   if(address == ALARM1_ADDRESS || address == ALARM2_ADDRESS){  // the alarms don't have a wday,day,month,or year field
-    Wire.send(dec2bcd(tm.Day));
+    Wire.write(dec2bcd(tm.Day));
   }else{
-    Wire.send(dec2bcd(tm.Wday));   
-    Wire.send(dec2bcd(tm.Day));
-    Wire.send(dec2bcd(tm.Month));
-    Wire.send(dec2bcd(tmYearToY2k(tm.Year)));   
+    Wire.write(dec2bcd(tm.Wday));   
+    Wire.write(dec2bcd(tm.Day));
+    Wire.write(dec2bcd(tm.Month));
+    Wire.write(dec2bcd(tmYearToY2k(tm.Year)));   
   }
   Wire.endTransmission();
 }
 
 void DS1337RTC::enableAlarm(int address){  //turn on the A1IE or A2IE bit
   Wire.beginTransmission(DS1337_CTRL_ID);
-  Wire.send(CONTROL_ADDRESS);  
+  Wire.write(CONTROL_ADDRESS);  
   if(address == ALARM1_ADDRESS){
     controlRegister |= 0x01;
   }else{
     controlRegister |= 0x03;
   }
   
-  Wire.send(controlRegister);
+  Wire.write(controlRegister);
   Wire.endTransmission();
 }
 
 void DS1337RTC::disableAlarm(int address){  // turn off the A1IE or A2IE bit
   Wire.beginTransmission(DS1337_CTRL_ID);
-  Wire.send(CONTROL_ADDRESS);  
+  Wire.write(CONTROL_ADDRESS);  
   if(address == ALARM1_ADDRESS){
     controlRegister &= 0xFE;
   }else{
     controlRegister &= 0xFD;
   }
   
-  Wire.send(controlRegister);
+  Wire.write(controlRegister);
   Wire.endTransmission();
 }
 
 void DS1337RTC::resetAlarms(){  // reset the A1F and A2F bits
   Wire.beginTransmission(DS1337_CTRL_ID);
-  Wire.send(STATUS_ADDRESS);
-  Wire.send(0x00);
+  Wire.write(STATUS_ADDRESS);
+  Wire.write(0x00);
   Wire.endTransmission();
 }
 
 void DS1337RTC::interruptSelect(int mode){  // set the INTCN bit, valid modes are INTB and SQW
   Wire.beginTransmission(DS1337_CTRL_ID);
-  Wire.send(CONTROL_ADDRESS);
+  Wire.write(CONTROL_ADDRESS);
   if(mode == INTB){
     controlRegister |= 0x04;
   }else{
     controlRegister &= 0xFB;
   }
   
-  Wire.send(controlRegister);
+  Wire.write(controlRegister);
   Wire.endTransmission();
 }
 
 void DS1337RTC::freqSelect(int freq){  // set RS1 and RS2 bits, freq 0=1Hz, 1=4.096kHz, 2=8.192kHz, 3=32.768kHz
   Wire.beginTransmission(DS1337_CTRL_ID);
-  Wire.send(CONTROL_ADDRESS);
+  Wire.write(CONTROL_ADDRESS);
   switch(freq){
     case 0: controlRegister &= 0xE7; break;
     case 1: controlRegister |= 0x08; break;
@@ -166,7 +166,7 @@ void DS1337RTC::freqSelect(int freq){  // set RS1 and RS2 bits, freq 0=1Hz, 1=4.
     case 3: controlRegister |= 0x18; break;
   }
   
-  Wire.send(controlRegister);
+  Wire.write(controlRegister);
   Wire.endTransmission();
 }
 // PRIVATE FUNCTIONS
@@ -185,15 +185,15 @@ uint8_t DS1337RTC::bcd2dec(uint8_t num)
 
 void DS1337RTC::stopClock(){
   Wire.beginTransmission(DS1337_CTRL_ID);
-  Wire.send(STATUS_ADDRESS);
-  Wire.send(0x80);
+  Wire.write(STATUS_ADDRESS);
+  Wire.write(0x80);
   Wire.endTransmission();
 }
 
 void DS1337RTC::startClock(){
   Wire.beginTransmission(DS1337_CTRL_ID);
-  Wire.send(STATUS_ADDRESS);
-  Wire.send(0x00);
+  Wire.write(STATUS_ADDRESS);
+  Wire.write(0x00);
   Wire.endTransmission();
 }
 
