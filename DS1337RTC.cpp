@@ -24,7 +24,7 @@
  */
 
 #include <Wire.h>
-#include <WProgram.h>
+#include <Arduino.h>
 #include "DS1337RTC.h"
 
 byte controlRegister = 0x18; // default settings on start
