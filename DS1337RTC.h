@@ -6,7 +6,7 @@
 #ifndef DS1337RTC_h
 #define DS1337RTC_h
 
-#include <Time.h>
+#include <TimeLib.h>
 
 #define DS1337_CTRL_ID 0x68
 #define CLOCK_ADDRESS 0x00
