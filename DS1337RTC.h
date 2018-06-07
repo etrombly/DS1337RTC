@@ -33,6 +33,7 @@ class DS1337RTC
     static void resetAlarms();
     static void interruptSelect(int mode);
     static void freqSelect(int freq);
+    bool readOSF();
 
   private:
     static uint8_t dec2bcd(uint8_t num);
