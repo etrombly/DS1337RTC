@@ -56,6 +56,20 @@ time_t DS1337RTC::sync()  // Function to use for Time.h setSyncProvider
   return(get(CLOCK_ADDRESS));
 }
 
+bool DS1337RTC::readOSF() // Aquire data from the RTC chip in BCD format
+{
+  Wire.beginTransmission(DS1337_CTRL_ID);
+  Wire.write(STATUS_ADDRESS);
+  Wire.endTransmission();
+  Wire.requestFrom(DS1337_CTRL_ID, 1);
+  uint8_t status = bitRead(Wire.read(), 7);
+  if(status==0x01){
+    return(true);
+  }else if (status == 0x00){
+    return(false);
+  }
+}
+
 void DS1337RTC::read( tmElements_t &tm, int address) // Aquire data from the RTC chip in BCD format
 {
   int numberBytes;
