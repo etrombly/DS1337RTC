@@ -10,15 +10,15 @@
 # Methods and Functions (KEYWORD2)
 #######################################
 get	KEYWORD2
-set KEYWORD2
-read KEYWORD2
-write KEYWORD2
-sync KEYWORD2
-enableAlarm KEYWORD2
-disableAlarm KEYWORD2
-resetAlarms KEYWORD2
-interruptSelect KEYWORD2
-freqSelect KEYWORD2
+set	KEYWORD2
+read	KEYWORD2
+write	KEYWORD2
+sync	KEYWORD2
+enableAlarm	KEYWORD2
+disableAlarm	KEYWORD2
+resetAlarms	KEYWORD2
+interruptSelect	KEYWORD2
+freqSelect	KEYWORD2
 #######################################
 # Instances (KEYWORD2)
 #######################################
